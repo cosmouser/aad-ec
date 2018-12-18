@@ -15,8 +15,6 @@ Usage of ./aad-ec:
 ## routes
 ```
 /               # Index
-/callback       # RedirectURI for AAD
-/login          # Provides URL for delegated permissions sign in
 /ece/getPlans   # API endpoint for user lookups
 ```
 
