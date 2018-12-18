@@ -1,0 +1,9 @@
+    {
+        "client_id": "CLIENTID GOES HERE",
+        "client_secret": "CLIENT SECRET HERE",
+        "resource": "https://graph.microsoft.com",
+        "grant_type": "client_credentials",
+        "tenant": "TENANT ID HERE",
+        "api-version": "v1.0",
+        "externalURL": ""
+    }
