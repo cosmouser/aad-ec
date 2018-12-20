@@ -100,7 +100,15 @@ func getPlans(userPrincipalName string) ([]byte, error) {
 		return []byte(err.Error()), err
 	}
 	if resp.StatusCode != 200 {
-		return output, errors.New("Request was not successful")
+		if resp.StatusCode >= 400 || resp.StatusCode <= 509 {
+			errv := &ErrorResponse{}
+			err = json.Unmarshal(output, errv)
+			if err != nil {
+				return []byte(err.Error()), err
+			}
+			return []byte(errv.Error.Message), errors.New(errv.Error.Code)
+		}
+		return output, errors.New("request was not successful")
 	}
 	user := &APResponse{}
 	err = json.Unmarshal(output, user)
@@ -128,7 +136,7 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	query := rURI.Query()
 	switch version := query.Get("version"); version {
-	case "0.1":
+	case "0.2":
 		switch r.Method {
 		case "GET":
 			if err := checkmail.ValidateFormat(query.Get("uid")); err != nil {
@@ -142,19 +150,21 @@ func APIHandler(w http.ResponseWriter, r *http.Request) {
 			}
 			data, err := getPlans(query.Get("uid"))
 			if err != nil {
-				if err.Error() == "Request was not successful" {
+				if err.Error() == "Request_ResourceNotFound" {
 					log.WithFields(log.Fields{
 						"remoteAddr": ra,
 						"uid":        query.Get("uid"),
-					}).Error(string(data))
-					http.Error(w, err.Error(), 503)
+						"message":    string(data),
+					}).Error(err.Error())
+					http.Error(w, err.Error(), 404)
 					return
 				}
 				log.WithFields(log.Fields{
 					"remoteAddr": ra,
 					"uid":        query.Get("uid"),
-				}).Error(string(data))
-				http.Error(w, err.Error(), 500)
+					"message":    string(data),
+				}).Error(err.Error())
+				http.Error(w, "request was not successful", 500)
 				return
 
 			}
@@ -196,9 +206,9 @@ var indexTemplate = template.Must(template.New("1").Parse(`<!DOCTYPE html>
 	  <div class="col-sm-4 col-sm-offset-4">
 		<h1>AzureAD Entitlement Checker</h1>
 		<form id="checker" method="GET" action="/ece/getPlans">
-		  <div class="form-group"><span class="label label-default">v0.1</span> <label for="uid">Email of user:</label>
+		  <div class="form-group"><span class="label label-default">v0.2</span> <label for="uid">Email of user:</label>
 		  <input type="text" class="form-control" id="uid" name="uid" value="cosmo@ucsc.edu"></div>
-		  <input type="hidden" id="version" name="version" value="0.1">
+		  <input type="hidden" id="version" name="version" value="0.2">
 		  <button type="submit" class="btn btn-primary">Submit</button>
 		</form>
 		<br>

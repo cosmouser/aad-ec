@@ -1,5 +1,5 @@
 # aad-ec
-## version 0.1
+## version 0.2
 
 AzureAD Entitlement Checker connects to AzureAD and provides a request endpoint and a graphical web interface for interacting with the directory. The tool acquires authorization tokens in order to send authorized requests to Azure.
 
@@ -20,5 +20,5 @@ Usage of ./aad-ec:
 
 ## example request URI
 ```
-/ece/getPlans?uid=principal@uni.edu&version=0.1
+/ece/getPlans?uid=principal@uni.edu&version=0.2
 ```

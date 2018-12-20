@@ -34,3 +34,21 @@ type AssignedPlan struct {
 type GetPlansResponse struct {
 	AssignedPlans []AssignedPlan `json:"assignedPlans"`
 }
+
+// ErrorResponse is the root of the json error response
+type ErrorResponse struct {
+	Error Error `json:"error"`
+}
+
+// Error contains information about the error
+type Error struct {
+	Code       string     `json:"code"`
+	Message    string     `json:"message"`
+	InnerError InnerError `json:"innerError"`
+}
+
+// InnerError contains error metadata
+type InnerError struct {
+	RequestID string `json:"requestId"`
+	Date      string `json:"date"`
+}
