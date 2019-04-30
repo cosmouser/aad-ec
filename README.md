@@ -14,8 +14,8 @@ Usage of ./aad-ec:
 
 ## routes
 ```
-/               # Index
-/ece/getPlans   # API endpoint for user lookups
+/               # Index.
+/ece/getPlans   # Endpoint for user lookups.
 ```
 
 ## example request URI
